@@ -1,0 +1,50 @@
+parameters:
+    application.class: \Backend\Core\Application
+    request.class: \Backend\Core\Request
+    response.class: \Backend\Core\Response
+    parser.class: \Symfony\Component\Yaml\Parser
+    config.class: \Backend\Core\Utilities\Config
+    router.class: \Backend\Core\Utilities\Router
+    callback_factory.class: \Backend\Core\Utilities\CallbackFactory
+    event_dispatcher.class: \Backend\Core\Utilities\EventDispatcher
+
+    router.config_file: routes
+
+services:
+    application:
+        class: %application.class%
+        arguments:
+            - @application_config
+            - @service_container
+    request:
+        class: %request.class%
+
+    parser:
+        class: %parser.class%
+    router_config:
+        class: %config.class%
+        factory_class: \Backend\Core\Utilities\Config
+        factory_method: getNamed
+        arguments:
+            - @parser
+            - %router.config_file%
+    callback_factory:
+        class: %callback_factory.class%
+    router:
+        class: %router.class%
+        arguments:
+            - @router_config
+            - @callback_factory
+
+    event_dispatcher:
+        class: %event_dispatcher.class%
+        arguments:
+            - @service_container
+    core_listener:
+        class: \Backend\Core\Listener\CoreListener
+        arguments:
+            - @service_container
+        tags:
+            - { name: core.listener, event: core.init }
+            - { name: core.listener, event: core.callback }
+            - { name: core.listener, event: core.result }

@@ -1,0 +1,4 @@
+imports:
+    - { resource: core_services }
+
+application:

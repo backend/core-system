@@ -1,0 +1,117 @@
+<?php
+/**
+ * The bootstrapping script
+ *
+ * PHP Version 5.3
+ *
+ * @category  Backend
+ * @package   Public
+ * @author    J Jurgens du Toit <jrgns@backend-php.net>
+ * @copyright 2011 - 2012 Jade IT (cc)
+ * @license   http://www.opensource.org/licenses/mit-license.php MIT License
+ * @link      http://backend-php.net
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of
+ * this software and associated documentation files (the "Software"), to deal in the
+ * Software without restriction, including without limitation the rights to use, copy,
+ * modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+ * and to permit persons to whom the Software is furnished to do so, subject to the
+ * following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR
+ * A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF
+ * CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE
+ * OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+if (__FILE__ == $_SERVER['SCRIPT_FILENAME']) {
+    die("This file cannot be executed directly");
+}
+date_default_timezone_set('Africa/Johannesburg');
+
+/**
+ * The project folder, containing the public folder, all libraries and configs.
+ *
+ * @var string
+ */
+define('PROJECT_FOLDER', realpath(__DIR__ . '/../') . '/');
+/**
+ * The root vendor folder, containing all libraries, including Backend-Core.
+ *
+ * @var string
+ */
+define('VENDOR_FOLDER', PROJECT_FOLDER . 'vendor/');
+
+/**
+ * The root application folder, containing all application space code.
+ *
+ * @var string
+ */
+define('SOURCE_FOLDER', PROJECT_FOLDER . 'app/');
+
+/**
+ * The root folder for Backend-Core source files
+ *
+ * @var string
+ */
+define('BACKEND_FOLDER', VENDOR_FOLDER . 'Backend/');
+
+/**
+ * The publicly accessable part of the installation
+ *
+ * @var string
+ */
+define('WEB_FOLDER', PROJECT_FOLDER . 'public/');
+
+/**
+ * The default extension for config files
+ *
+ * @var string
+ */
+define('CONFIG_EXT', 'yaml');
+
+/**
+ * An application wide Salt. Change it to something random
+ *
+ * @var string
+ */
+define('APPLICATION_SALT', gethostname());
+
+if (!defined('BACKEND_SITE_STATE')) {
+    if (PHP_SAPI == 'cli') {
+        if (gethostname() === 'localhost') {
+            define('BACKEND_SITE_STATE', 'production');
+        } else {
+            define('BACKEND_SITE_STATE', 'testing');
+        }
+    } else if (in_array($_SERVER['SERVER_ADDR'], array('::1', '127.0.0.1'))) {
+        define('BACKEND_SITE_STATE', 'development');
+    } else {
+        define('BACKEND_SITE_STATE', 'production');
+    }
+}
+
+// Error Reporting
+switch (BACKEND_SITE_STATE) {
+    case 'testing':
+    case 'development':
+        error_reporting(-1);
+        ini_set('display_errors', 1);
+        break;
+    default:
+        error_reporting(E_ALL & ~E_DEPRECATED);
+        ini_set('display_errors', 0);
+        break;
+}
+
+if (file_exists(VENDOR_FOLDER . 'autoload.php')) {
+    include VENDOR_FOLDER . 'autoload.php';
+} else if (file_exists(BACKEND_FOLDER . 'Core/Autoloader.php')) {
+    include BACKEND_FOLDER . 'Core/Autoloader.php';
+    \Backend\Core\Autoloader::register();
+}
+

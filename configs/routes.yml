@@ -1,0 +1,5 @@
+# Define all custom routes here
+routes:
+    home:
+        route: /<name>
+        callback: ucwords
