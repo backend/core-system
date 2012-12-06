@@ -7,6 +7,9 @@ parameters:
     router.class: \Backend\Core\Utilities\Router
     callback_factory.class: \Backend\Core\Utilities\CallbackFactory
     event_dispatcher.class: \Backend\Core\Utilities\EventDispatcher
+    request.context.class: \Backend\Core\Utilities\RequestContext
+    url_generator.class: \Backend\Core\Utilities\UrlGenerator
+    formatter.class: \Backend\Core\Utilities\Formatter
 
     router.config_file: routes
 
@@ -48,3 +51,19 @@ services:
             - { name: core.listener, event: core.init }
             - { name: core.listener, event: core.callback }
             - { name: core.listener, event: core.result }
+
+    request_context:
+        class: %request.context.class%
+        arguments:
+            - @request
+    url_generator:
+        class: %url_generator.class%
+        arguments:
+            - @request_context
+            - @router_config
+    formatter:
+        class: %formatter.class%
+        factory_class: \Backend\Core\Utilities\Formatter
+        factory_method: factory
+        arguments:
+            - @service_container
