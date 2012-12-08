@@ -48,7 +48,6 @@ services:
         arguments:
             - @service_container
         tags:
-            - { name: core.listener, event: core.init }
             - { name: core.listener, event: core.callback }
             - { name: core.listener, event: core.result }
 
