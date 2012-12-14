@@ -22,3 +22,16 @@ Installation
 
 `composer` will install all the necessary dependencies. If you're not familiar with
 composer, check out http://getcomposer.org.
+
+Core
+----
+
+The Backend-Core tier provides only basic Request / Response functionality, coupled
+with dependency injection and event management, to provide a simple base to build
+applications from. It's ideal for building single purpose API's where the callbacks
+will handle logic and formatting.
+
+Next Step
+---------
+
+For more information, read the documentation on http://backend-php.net
