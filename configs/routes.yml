@@ -1,5 +1,15 @@
 # Define all custom routes here
 routes:
     home:
-        route: /<name>
+        route: /
+        callback: gethostname
+
+    ucwords:
+        route: /<string>
         callback: ucwords
+        defaults:
+            string: this is the default value
+
+    str_getcsv:
+        route: /<string>/<delimiter>
+        callback: str_getcsv
